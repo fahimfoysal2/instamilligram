@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class CreatePostsTable extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migration to create posts table
      *
      * @return void
      */
@@ -16,6 +16,7 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
+            // user can create post without any post title or details, but image is required
             $table->text('content')->nullable();
             $table->timestamps();
         });

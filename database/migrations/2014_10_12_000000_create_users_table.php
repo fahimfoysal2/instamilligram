@@ -19,11 +19,11 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('user_name')->unique();
             $table->string('password');
-            $table->timestamp('dob');
+            $table->timestamp('dob'); // date_of_birth
             $table->string('gender');
-            $table->string('phone');
-            $table->text('bio');
-            $table->string('account_type');
+            $table->string('phone')->unique();
+            $table->text('bio')->nullable();
+            $table->string('account_type'); // public/private
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
