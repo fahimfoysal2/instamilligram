@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePhotosTable extends Migration
+class CreateTaggablesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreatePhotosTable extends Migration
      */
     public function up()
     {
-        Schema::create('photos', function (Blueprint $table) {
+        Schema::create('taggables', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('photoable_id');
-            $table->string('photoable_type');
-            $table->string('url');
+            $table->foreignId('tag_id')
+                ->constrained()
+                ->cascadeOnDelete();
+            $table->morphs('taggable');
             $table->timestamps();
-
-            $table->index(['photoable_id','photoable_type']);
         });
     }
 
@@ -31,6 +30,9 @@ class CreatePhotosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('photos');
+        Schema::table('taggables', function (Blueprint $table){
+           $table->dropForeign(['tag_id']);
+        });
+        Schema::dropIfExists('taggables');
     }
 }

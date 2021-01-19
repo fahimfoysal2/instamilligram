@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTagablesTable extends Migration
+class CreateImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateTagablesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tagables', function (Blueprint $table) {
+        Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tag_id')->constrained();
-            $table->integer('tagable_id');
-            $table->string('tagable_type');
+            $table->morphs('imageable');
+            $table->string('url'); // image url
             $table->timestamps();
-
-            $table->index(['tagable_id', 'tagable_type']);
         });
     }
 
@@ -31,6 +28,6 @@ class CreateTagablesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tagables');
+        Schema::dropIfExists('images');
     }
 }
