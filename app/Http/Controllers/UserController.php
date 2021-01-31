@@ -2,88 +2,73 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Follow;
+
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
     /**
-     * follow other user
+     * Register/ Create a new user.
+     *
      * @param Request $request
      * @return JsonResponse
      */
-    public function follow(Request $request)
+    public function register(Request $request)
     {
-        /**
-         * check if user is followable:
-         * -> user exist
-         * -> not trying to follow self
-         * -> not already followed
-         * -> profile is public
-         */
-
-
-        // validate that users exist
         $request->validate([
-            'user_id' => 'required|exists:users,id'
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'user_name' => 'required|unique:users,user_name',
+            'password' => 'required|min:8',
+            'date_of_birth' => 'required',
+            'gender' => 'required',
+            'phone' => 'required|unique:users,phone',
+            'bio' => 'string',
+            'account_type' => 'int'
         ]);
 
-        // can't follow self
-        if ($request->user_id == Auth::id()) {
-            return response()->json([
-                'error' => 'Can\'t follow yourself!',
-            ]);
+        $user = User::create(array_merge(
+            $request->except('password'),
+            ['password' => bcrypt($request->password)]
+        ));
 
-        }
-
-        // can't follow a user twice
-
-
-        // get user to follow
-        $user_to_follow = User::where('id', $request->user_id)->first();
-
-
-        // only follow users with public profile
-        // account_type = public
-        if ($user_to_follow->account_type == 1) {
-            $followed = Follow::create([
-                'user_id' => $request->user_id,
-                'follower_id' => Auth::id(),
-            ]);
-
-            return response()->json([
-                'user' => $followed->follower_id,
-                'following' => $followed->user_id
-            ]);
-        } else {
-            return response()->json([
-                'message' => "This is private account. Needs users approval before you can follow.",
-            ]);
-        }
+        return response()->json($user);
     }
 
     /**
-     * get list of followers for an user
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return Response
      */
-    public function followers(Request $request)
+    public function show($id)
     {
-//        return $allUsersWithFollowers = User::with('followers')->get();
+        //
+    }
 
-        $followers = Follow::with([
-            'followers' => function ($query) {
-                $query->select('id', 'name', 'user_name');
-            }])
-            ->where('user_id', '=', $request->user()->id)
-            ->get()
-            ->pluck('followers');
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
 
-        return response()->json([
-            'user' => $request->user()->id,
-            'followers' => $followers,
-        ]);
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 }

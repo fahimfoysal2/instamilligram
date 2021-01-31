@@ -39,64 +39,11 @@ class AuthController extends Controller
     }
 
     /**
-     * Register a new user.
-     *
-     * @param Request $request
-     * @return JsonResponse
+     * Logout User
+     * revoke token
      */
-    public function register(Request $request)
+    public function logout()
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'user_name' => 'required|unique:users,user_name',
-            'password' => 'required|min:8',
-            'date_of_birth' => 'required',
-            'gender' => 'required',
-            'phone' => 'required|unique:users,phone',
-            'bio' => 'string',
-            'account_type' => 'int'
-        ]);
-
-        $user = User::create(array_merge(
-            $request->except('password'),
-            ['password' => bcrypt($request->password)]
-        ));
-
-        return response()->json($user);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
+        // logout user
     }
 }

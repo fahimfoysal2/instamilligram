@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('register', [AuthController::class, 'register']);
+Route::post('register', [UserController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
@@ -24,7 +25,7 @@ Route::middleware('auth:api')->group(function () {
         return $request->user();
     });
 
-    Route::post('/follow', [UserController::class, 'follow']);
-    Route::post('/followers', [UserController::class, 'followers']);
+    Route::post('/follow', [FollowController::class, 'follow']);
+    Route::post('/followers', [FollowController::class, 'followers']);
 });
 
