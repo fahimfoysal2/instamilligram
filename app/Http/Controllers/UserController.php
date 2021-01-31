@@ -2,14 +2,25 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Models\User;
+use App\Repository\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
+
+    /**
+     * @var UserRepositoryInterface
+     */
+    private $userRepo;
+
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+
+        $this->userRepo = $userRepository;
+    }
+
     /**
      * Register/ Create a new user.
      *
@@ -30,7 +41,7 @@ class UserController extends Controller
             'account_type' => 'int'
         ]);
 
-        $user = User::create(array_merge(
+        $user = $this->userRepo->register(array_merge(
             $request->except('password'),
             ['password' => bcrypt($request->password)]
         ));
