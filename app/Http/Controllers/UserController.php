@@ -71,10 +71,19 @@ class UserController extends Controller
      */
     public function followers(Request $request)
     {
-        return DB::table('follows')
-            ->join('users', 'follows.follower_id', '=', 'users.id')
-            ->where('follows.user_id', '=', $request->user()->id)
-            ->select('users.id as follower_id','users.user_name')
-            ->get();
+//        return $allUsersWithFollowers = User::with('followers')->get();
+
+        $followers = Follow::with([
+            'followers' => function ($query) {
+                $query->select('id', 'name', 'user_name');
+            }])
+            ->where('user_id', '=', $request->user()->id)
+            ->get()
+            ->pluck('followers');
+
+        return response()->json([
+            'user' => $request->user()->id,
+            'followers' => $followers,
+        ]);
     }
 }
