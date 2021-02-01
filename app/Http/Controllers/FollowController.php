@@ -7,15 +7,17 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class FollowController extends Controller
 {
     /**
      * follow other user
+     *
      * @param Request $request
      * @return JsonResponse
      */
-    public function follow(Request $request)
+    public function follow(Request $request): JsonResponse
     {
         /**
          * check if user is followable:
@@ -63,6 +65,38 @@ class FollowController extends Controller
             ]);
         }
     }
+
+    /**
+     *
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
+     */
+    public function unfollow(Request $request)
+    {
+        $this->validate($request, [
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $currentUserId = Auth::id();
+
+        $followee = Follow::where('user_id', $request->user_id)
+            ->where('follower_id', $currentUserId)
+            ->first();
+
+        if ($followee){
+            $followee->delete();
+            return response()->json([
+                'message' => "No longer following the user."
+            ]);
+        }else{
+            return response()->json([
+                'message' => "You must follow first!"
+            ]);
+        }
+    }
+
 
     /**
      * get list of followers for an user
